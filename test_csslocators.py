@@ -66,4 +66,6 @@ def test_verify_css_locators(page: Page):
     # page.locator("input.search-box-text[value='Search store']").fill("T-Shirts")
     page.locator(".search-box-text[value='Search store']").fill("T-Shirts")
 
+
+
     page.wait_for_timeout(5000)
