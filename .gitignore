@@ -1,6 +1,9 @@
 # Virtual environment
 .venv/
 
+# Local run scripts (machine-specific paths)
+runtest.bat
+
 # Python cache files
 __pycache__/
 *.pyc
