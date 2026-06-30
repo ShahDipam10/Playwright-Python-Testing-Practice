@@ -128,3 +128,90 @@ def test_checkbox_select_all(page: Page):
     for checkbox in checkboxes[:-3]:
         expect(checkbox).not_to_be_checked()
     print("Last three (Thursday, Friday, Saturday) are checked; Mon-Wed remain unchecked")
+
+
+def test_single_selection_dropdown(page: Page):
+    page.goto("https://testautomationpractice.blogspot.com/")
+    country_dropdown = page.locator("#country")
+
+    # visibility and enabled checks
+    expect(country_dropdown).to_be_visible()
+    expect(country_dropdown).to_be_enabled()
+
+    # count total number of options in the dropdown
+    all_options = page.locator("#country option")
+    total_options = all_options.count()
+    print(f"Total number of options in dropdown: {total_options}")
+
+    # print the default selected value before interaction
+    default_value = country_dropdown.input_value()
+    print(f"Default selected value: {default_value}")
+
+    # select India by visible label text
+    country_dropdown.select_option(label="India")
+
+    # verify India is now selected
+    selected_value = country_dropdown.input_value()
+    print(f"Selected value after selection: {selected_value}")
+    expect(country_dropdown).to_have_value("india")
+
+def test_multi_selection_dropdown(page: Page):
+    page.goto("https://testautomationpractice.blogspot.com/")
+
+    # ── Colors multi-select ──────────────────────────────────────────────────
+    colors_dropdown = page.locator("#colors")
+
+    expect(colors_dropdown).to_be_visible()
+    expect(colors_dropdown).to_be_enabled()
+
+    # count total options available
+    total_colors = page.locator("#colors option").count()
+    print(f"Total color options: {total_colors}")
+
+    # get all available color options and print them sorted alphabetically
+    all_color_names = colors_dropdown.evaluate(
+        "select => Array.from(select.options).map(o => o.text)"
+    )
+    print(f"All color options (original order): {all_color_names}")
+    print(f"All color options (sorted):         {sorted(all_color_names)}")
+
+    # select multiple colors — passing a list mimics Ctrl+Click selection
+    colors_dropdown.select_option(["Red", "Blue", "Green"])
+
+    # verify all three are selected
+    selected_colors = colors_dropdown.evaluate(
+        "select => Array.from(select.selectedOptions).map(o => o.text)"
+    )
+    print(f"Selected colors: {selected_colors}")
+    assert "Red" in selected_colors
+    assert "Blue" in selected_colors
+    assert "Green" in selected_colors
+
+    # ── Sorted list multi-select ─────────────────────────────────────────────
+    sorted_list = page.get_by_role("listbox", name="Sorted List:")
+
+    expect(sorted_list).to_be_visible()
+    expect(sorted_list).to_be_enabled()
+
+    # count total options available
+    total_items = sorted_list.locator("option").count()
+    print(f"Total sorted list options: {total_items}")
+
+    # get all available sorted list options and print them sorted alphabetically
+    all_item_names = sorted_list.evaluate(
+        "select => Array.from(select.options).map(o => o.text)"
+    )
+    print(f"All sorted list options (original order): {all_item_names}")
+    print(f"All sorted list options (sorted):         {sorted(all_item_names)}")
+
+    # select multiple items from the sorted list
+    sorted_list.select_option(["Cat", "Dog", "Lion"])
+
+    # verify all three are selected
+    selected_items = sorted_list.evaluate(
+        "select => Array.from(select.selectedOptions).map(o => o.text)"
+    )
+    print(f"Selected items: {selected_items}")
+    assert "Cat" in selected_items
+    assert "Dog" in selected_items
+    assert "Lion" in selected_items
